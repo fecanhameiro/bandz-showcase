@@ -1,0 +1,54 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "isSent", "order": "ASCENDING" },
+        { "fieldPath": "__name__", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        { "fieldPath": "isSent", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "BR_users",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "pendingDeletion", "order": "ASCENDING" },
+        { "fieldPath": "deletionRequestedAt", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "BR_events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "active", "order": "ASCENDING" },
+        { "fieldPath": "eventDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "BR_banner_history",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "slotType", "order": "ASCENDING" },
+        { "fieldPath": "selectedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "JH_jobs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "dismissed", "order": "ASCENDING" },
+        { "fieldPath": "platform", "order": "ASCENDING" },
+        { "fieldPath": "androidMatchScore", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

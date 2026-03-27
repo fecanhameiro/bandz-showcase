@@ -1,0 +1,157 @@
+# SwiftLint Configuration — Bandz iOS
+# Alinhado com CLAUDE.md conventions e Swift 6 patterns
+
+# Paths to lint
+included:
+  - Bandz
+  - BandzTests
+  - BandzUITests
+  - BandzNotificationService
+
+excluded:
+  - DerivedData
+  - build
+  - Pods
+  - Carthage
+  - iOSDocumentation
+  - Bandz/Resources/Lottie
+  - Bandz/Resources/Fonts
+
+# Rules Configuration
+disabled_rules:
+  - trailing_whitespace         # Noise durante dev ativo
+  - todo                        # TODOs são válidos durante MVP
+  - opening_brace               # Conflita com alguns patterns SwiftUI
+  - multiple_closures_with_trailing_closure  # SwiftUI usa muito isso
+  - no_grouping_extension       # Extensões organizacionais são úteis
+  - switch_case_alignment       # Estilo do projeto permite indentação diferente
+  - implicit_optional_initialization  # @State vars comuns em SwiftUI
+  - comment_spacing             # Muitos headers de MARK sem espaço — não crítico
+
+opt_in_rules:
+  - closure_spacing
+  - contains_over_filter_count
+  - empty_count
+  - empty_string
+  - fatal_error_message
+  - first_where
+  - force_unwrapping
+  - last_where
+  - modifier_order
+  - overridden_super_call
+  - private_action
+  - private_outlet
+  - redundant_nil_coalescing
+  - sorted_first_last
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - yoda_condition
+
+# Rule Parameters — alinhados com CLAUDE.md Code Style
+line_length:
+  warning: 160
+  error: 250
+  ignores_comments: true
+  ignores_urls: true
+  ignores_interpolated_strings: true
+
+file_length:
+  warning: 500
+  error: 1000
+
+type_body_length:
+  warning: 400
+  error: 700
+
+function_body_length:
+  warning: 60
+  error: 100
+
+type_name:
+  min_length: 3
+  max_length: 50
+  allowed_symbols: []
+  validates_start_with_lowercase: error
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - x
+    - y
+    - i
+    - e
+    - p
+    - a
+    - s
+    - v
+    - g
+    - f
+    - to
+    - db
+    - ui
+    - ok
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+nesting:
+  type_level: 3
+  function_level: 4
+
+cyclomatic_complexity:
+  warning: 15
+  error: 25
+
+large_tuple:
+  warning: 3
+  error: 4
+
+# Modifier order — seguir convenção Apple
+modifier_order:
+  preferred_modifier_order:
+    - acl
+    - setterACL
+    - override
+    - dynamic
+    - mutating
+    - lazy
+    - final
+    - required
+    - convenience
+    - typeMethods
+    - owned
+
+# Force unwrapping — warning, não error (há casos legítimos em SwiftUI previews)
+force_unwrapping:
+  severity: warning
+
+# Custom rules para patterns específicos do Bandz
+custom_rules:
+  observation_ignored_required:
+    name: "@ObservationIgnored for non-state properties"
+    regex: '(@Observable[\s\S]*?)(private\s+(let|var)\s+(?!.*(?:isLoading|is[A-Z]|has[A-Z]|show[A-Z]|error|items|events|banners|categories|sections|results|state|query|search|text|name|title|subtitle|message|description|count|offset|opacity|scale|rotation|selected|expanded|presented|current|phone|verification|code)))'
+    message: "Non-state properties in @Observable classes should use @ObservationIgnored"
+    severity: warning
+    match_kinds:
+      - comment
+
+  print_usage:
+    name: "Use Logger instead of print"
+    regex: '(?<!\.)print\s*\('
+    message: "Use Logger.shared instead of print(). See LOG-README.md"
+    severity: warning
+    match_kinds:
+      - identifier
+
+  nslog_usage:
+    name: "Use Logger instead of NSLog"
+    regex: 'NSLog\s*\('
+    message: "Use Logger.shared instead of NSLog(). See LOG-README.md"
+    severity: warning

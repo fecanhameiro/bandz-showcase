@@ -1,0 +1,196 @@
+---
+import type { Locale } from "../i18n/translations";
+import { t } from "../i18n/translations";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const i = t(locale);
+
+const steps = [
+  { ...i.howItWorks.step1, icon: "music" as const },
+  { ...i.howItWorks.step2, icon: "compass" as const },
+  { ...i.howItWorks.step3, icon: "heart" as const },
+];
+---
+
+<section id="how-it-works" class="relative py-32 px-6">
+  <!-- Subtle gradient divider -->
+  <div
+    class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px"
+    style="background: linear-gradient(to right, transparent, rgba(79, 70, 229, 0.15), transparent)"
+    aria-hidden="true"
+  ></div>
+
+  <div class="max-w-5xl mx-auto">
+    <div class="text-center mb-20 reveal">
+      <h2 class="section-heading font-bold tracking-tight mb-4">
+        {i.howItWorks.title}
+      </h2>
+      <div class="w-20 h-1 mx-auto rounded-full" style="background: linear-gradient(to right, var(--color-brand-indigo), var(--color-brand-secondary))"></div>
+    </div>
+
+    <!-- Desktop: horizontal timeline -->
+    <div class="hidden md:block reveal" style="animation-delay: 0.15s">
+      <div class="relative">
+        <!-- Timeline track -->
+        <div class="timeline-track" aria-hidden="true"></div>
+
+        <ol class="grid grid-cols-3 gap-8 relative z-10 reveal-stagger list-none m-0 p-0">
+          {
+            steps.map((step, idx) => (
+              <li class="flex flex-col items-center text-center">
+                {/* Icon circle with badge */}
+                <div class="relative mb-8">
+                  <div class="step-icon glass-card">
+                    {step.icon === "music" && (
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M9 18V5l12-2v13" />
+                        <circle cx="6" cy="18" r="3" />
+                        <circle cx="18" cy="16" r="3" />
+                      </svg>
+                    )}
+                    {step.icon === "compass" && (
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10" />
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                      </svg>
+                    )}
+                    {step.icon === "heart" && (
+                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                      </svg>
+                    )}
+                  </div>
+                  {/* Number badge */}
+                  <span class="step-badge">{step.number}</span>
+                </div>
+
+                <h3 class="text-xl font-semibold mb-2">{step.title}</h3>
+                <p class="text-text-secondary leading-relaxed max-w-[240px]">
+                  {step.description}
+                </p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+
+    <!-- Mobile: vertical timeline -->
+    <ol class="md:hidden space-y-10 list-none m-0 p-0">
+      {
+        steps.map((step, idx) => (
+          <li class="reveal flex gap-5" style={`animation-delay: ${idx * 0.15}s`}>
+            {/* Vertical line + icon */}
+            <div class="flex flex-col items-center">
+              <div class="relative">
+                <div class="step-icon step-icon-sm glass-card">
+                  {step.icon === "music" && (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M9 18V5l12-2v13" />
+                      <circle cx="6" cy="18" r="3" />
+                      <circle cx="18" cy="16" r="3" />
+                    </svg>
+                  )}
+                  {step.icon === "compass" && (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="12" cy="12" r="10" />
+                      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+                    </svg>
+                  )}
+                  {step.icon === "heart" && (
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                    </svg>
+                  )}
+                </div>
+                <span class="step-badge step-badge-sm">{step.number}</span>
+              </div>
+              {/* Vertical connector line (not on last) */}
+              {idx < 2 && (
+                <div class="w-px h-full min-h-[40px] mt-2" style="background: linear-gradient(to bottom, rgba(79, 70, 229, 0.2), transparent)" />
+              )}
+            </div>
+
+            {/* Text */}
+            <div class="pb-2">
+              <h3 class="text-lg font-semibold mb-1">{step.title}</h3>
+              <p class="text-text-secondary text-sm leading-relaxed">
+                {step.description}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  /* Horizontal timeline track (desktop) */
+  .timeline-track {
+    position: absolute;
+    top: 32px;
+    left: 16.67%;
+    right: 16.67%;
+    height: 2px;
+    background: linear-gradient(
+      to right,
+      var(--color-brand-indigo),
+      var(--color-brand-primary),
+      var(--color-brand-secondary)
+    );
+    border-radius: 1px;
+  }
+
+  /* Icon circles */
+  .step-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-brand-indigo-light);
+    transition: all 0.3s ease;
+  }
+
+  .step-icon:hover {
+    border-color: var(--color-brand-indigo-light);
+    box-shadow: 0 0 20px var(--color-glow-primary);
+  }
+
+  .step-icon-sm {
+    width: 48px;
+    height: 48px;
+  }
+
+  /* Number badge */
+  .step-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-brand-indigo), var(--color-brand-primary));
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px var(--color-glow-primary);
+  }
+
+  .step-badge-sm {
+    width: 20px;
+    height: 20px;
+    top: -4px;
+    right: -4px;
+    font-size: 0.6rem;
+  }
+</style>

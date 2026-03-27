@@ -1,0 +1,415 @@
+---
+import type { Locale } from "../i18n/translations";
+import { t } from "../i18n/translations";
+import PhoneMockup from "./PhoneMockup.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const i = t(locale);
+---
+
+<section class="relative min-h-screen flex items-center px-6 pt-24 pb-16 overflow-hidden" data-hero>
+  <!-- Cursor Aurora — interactive spotlight (desktop only) -->
+  <div
+    class="pointer-events-none absolute inset-0 z-0 hidden lg:block transition-opacity duration-500 opacity-0"
+    aria-hidden="true"
+    data-hero-aurora
+  ></div>
+
+  <!-- Gradient Orbs Background (parallax layer) -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true" data-hero-orbs style="will-change: transform">
+    <div
+      class="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20 blur-[120px] animate-glow"
+      style="background: radial-gradient(circle, var(--color-brand-indigo), transparent 70%)"
+    ></div>
+    <div
+      class="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full opacity-15 blur-[120px] animate-glow"
+      style="background: radial-gradient(circle, var(--color-brand-secondary), transparent 70%); animation-delay: 1.5s"
+    ></div>
+    <div
+      class="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full opacity-10 blur-[100px]"
+      style="background: radial-gradient(circle, var(--color-brand-indigo-light), transparent 70%)"
+    ></div>
+  </div>
+
+  <!-- Constellation particles (parallax layer — slower) -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-hero-constellation style="will-change: transform">
+    <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <!-- Constellation lines -->
+      <line x1="8%" y1="15%" x2="18%" y2="28%" class="constellation-line" />
+      <line x1="18%" y1="28%" x2="12%" y2="45%" class="constellation-line" />
+      <line x1="75%" y1="12%" x2="85%" y2="25%" class="constellation-line" />
+      <line x1="85%" y1="25%" x2="78%" y2="38%" class="constellation-line" />
+      <line x1="90%" y1="60%" x2="82%" y2="72%" class="constellation-line" />
+      <line x1="5%" y1="65%" x2="15%" y2="78%" class="constellation-line" />
+      <!-- Center constellation cluster -->
+      <line x1="42%" y1="35%" x2="52%" y2="42%" class="constellation-line" />
+      <line x1="52%" y1="42%" x2="48%" y2="55%" class="constellation-line" />
+      <line x1="48%" y1="55%" x2="38%" y2="50%" class="constellation-line" />
+      <!-- Stars -->
+      <circle cx="8%" cy="15%" r="1.5" class="star star-bright" />
+      <circle cx="18%" cy="28%" r="1" class="star" />
+      <circle cx="12%" cy="45%" r="1.5" class="star star-bright" style="animation-delay: 0.5s" />
+      <circle cx="75%" cy="12%" r="1" class="star" style="animation-delay: 1s" />
+      <circle cx="85%" cy="25%" r="1.5" class="star star-bright" style="animation-delay: 0.3s" />
+      <circle cx="78%" cy="38%" r="1" class="star" style="animation-delay: 1.5s" />
+      <circle cx="90%" cy="60%" r="1.5" class="star star-bright" style="animation-delay: 0.8s" />
+      <circle cx="82%" cy="72%" r="1" class="star" style="animation-delay: 2s" />
+      <circle cx="5%" cy="65%" r="1" class="star" style="animation-delay: 1.2s" />
+      <circle cx="15%" cy="78%" r="1.5" class="star star-bright" style="animation-delay: 0.6s" />
+      <!-- Center cluster stars -->
+      <circle cx="42%" cy="35%" r="1" class="star star-bright" style="animation-delay: 0.7s" />
+      <circle cx="52%" cy="42%" r="1.5" class="star" style="animation-delay: 1.3s" />
+      <circle cx="48%" cy="55%" r="1" class="star star-bright" style="animation-delay: 0.2s" />
+      <circle cx="38%" cy="50%" r="1" class="star" style="animation-delay: 1.9s" />
+      <!-- Scattered solo stars -->
+      <circle cx="30%" cy="8%" r="0.8" class="star" style="animation-delay: 0.4s" />
+      <circle cx="55%" cy="18%" r="1" class="star star-bright" style="animation-delay: 1.8s" />
+      <circle cx="65%" cy="80%" r="0.8" class="star" style="animation-delay: 0.9s" />
+      <circle cx="40%" cy="88%" r="1" class="star star-bright" style="animation-delay: 1.4s" />
+      <circle cx="95%" cy="45%" r="0.8" class="star" style="animation-delay: 2.2s" />
+      <circle cx="3%" cy="90%" r="1" class="star" style="animation-delay: 0.7s" />
+      <circle cx="50%" cy="5%" r="0.8" class="star" style="animation-delay: 1.6s" />
+      <circle cx="22%" cy="62%" r="0.8" class="star star-bright" style="animation-delay: 2.4s" />
+      <circle cx="68%" cy="30%" r="1" class="star" style="animation-delay: 0.1s" />
+    </svg>
+  </div>
+
+  <!-- Content: split layout -->
+  <div class="relative z-10 max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+
+    <!-- Left: Text content -->
+    <div class="text-center lg:text-left">
+      <!-- Tagline pill -->
+      <div class="animate-fade-in inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-indigo/20 bg-brand-indigo/5 text-text-secondary text-sm mb-8">
+        <span class="w-2 h-2 rounded-full bg-brand-indigo-light animate-pulse"></span>
+        {i.hero.tagline}
+      </div>
+
+      <!-- Title -->
+      <h1
+        class="animate-slide-up font-black leading-[0.95] tracking-tight mb-8"
+        style="font-size: clamp(3rem, 8vw, 6rem);"
+      >
+        {i.hero.title}
+        <br />
+        <span class="gradient-text">{i.hero.titleHighlight}</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p
+        class="animate-slide-up text-lg sm:text-xl text-text-secondary max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed"
+        style="animation-delay: 0.2s"
+      >
+        {i.hero.subtitle}
+      </p>
+
+      <!-- CTAs -->
+      <div
+        class="animate-slide-up flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4"
+        style="animation-delay: 0.4s"
+      >
+        <a
+          href="#download"
+          class="cta-shimmer cta-magnetic cta-primary group relative px-8 py-4 rounded-full text-white font-semibold text-lg overflow-hidden"
+          style="transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.3s ease"
+          data-track="cta_click"
+          data-track-location="hero"
+        >
+          {i.hero.cta}
+          <span class="inline-block ml-2 group-hover:translate-x-1 transition-transform">&rarr;</span>
+        </a>
+        <a
+          href="#features"
+          class="px-8 py-4 rounded-full border border-cta-border text-text-secondary font-medium hover:text-text-primary hover:border-cta-hover-border transition-all"
+          data-track="cta_click"
+          data-track-location="hero_secondary"
+        >
+          {i.hero.ctaSecondary}
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: Phone mockup with floating badges -->
+    <div
+      class="animate-slide-up relative flex justify-center lg:justify-end"
+      style="animation-delay: 0.3s"
+    >
+      <!-- Floating genre badges (randomized on page load) -->
+      <div class="hidden sm:block" aria-hidden="true">
+        <span class="floating-badge" style="top: 8%; left: -5%; --float-delay: 0s; --float-rotate: -3deg;" data-hero-badge="indigo">Rock</span>
+        <span class="floating-badge" style="top: 25%; right: -8%; --float-delay: 1.5s; --float-rotate: 2deg;" data-hero-badge="indigo">Jazz</span>
+        <span class="floating-badge floating-badge-pink" style="bottom: 30%; left: -10%; --float-delay: 3s; --float-rotate: -2deg;" data-hero-badge="pink">Eletrônica</span>
+        <span class="floating-badge floating-badge-teal" style="bottom: 12%; right: -5%; --float-delay: 4.5s; --float-rotate: 3deg;" data-hero-badge="teal">Indie</span>
+      </div>
+
+      <PhoneMockup
+        src="/screenshot-app-light.png"
+        lightSrc="/screenshot-app-light.png"
+        darkSrc="/screenshot-app-dark.png"
+        alt="bandz app — your music universe"
+        loading="eager"
+        decoding="sync"
+        fetchPriority="high"
+        imgClass="hero-phone-image"
+      />
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce z-10">
+    <svg
+      width="24"
+      height="24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      class="text-text-muted"
+    >
+      <path d="M12 5v14m-7-7 7 7 7-7" />
+    </svg>
+  </div>
+</section>
+
+<style>
+  .constellation-line {
+    stroke: var(--color-constellation-line);
+    stroke-width: 1;
+  }
+
+  .star {
+    fill: var(--color-star);
+    animation: star-twinkle 3s ease-in-out infinite;
+  }
+
+  .star-bright {
+    fill: var(--color-star-bright);
+  }
+
+  @keyframes star-twinkle {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  /* Shimmer effect on CTA */
+  .cta-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    transition: left 0.6s ease;
+  }
+
+  .cta-shimmer:hover::after {
+    left: 100%;
+  }
+
+  /* Floating genre badges */
+  .floating-badge {
+    position: absolute;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--color-orbit-genre-bg);
+    border: 1px solid var(--color-orbit-genre-border);
+    color: var(--color-orbit-genre-text);
+    animation: float-badge 5s ease-in-out infinite;
+    animation-delay: var(--float-delay, 0s);
+    z-index: 5;
+  }
+
+  .floating-badge-pink {
+    background: var(--color-glow-secondary);
+    border-color: rgba(239, 45, 130, 0.3);
+    color: var(--color-brand-secondary);
+  }
+
+  .floating-badge-teal {
+    background: var(--color-glow-teal);
+    border-color: rgba(20, 184, 166, 0.3);
+    color: var(--color-brand-teal);
+  }
+
+  @keyframes float-badge {
+    0%, 100% {
+      transform: translateY(0) rotate(var(--float-rotate, 0deg));
+    }
+    50% {
+      transform: translateY(-8px) rotate(var(--float-rotate, 0deg));
+    }
+  }
+</style>
+
+<script>
+  function initHeroThemePhone() {
+    const image = document.querySelector<HTMLImageElement>('.hero-phone-image');
+    if (!image) return;
+
+    const lightSrc = image.dataset.lightSrc || image.getAttribute('src') || '';
+    const darkSrc = image.dataset.darkSrc || lightSrc;
+
+    function applyThemeImage() {
+      const src = document.documentElement.classList.contains('dark') ? darkSrc : lightSrc;
+      if (src && image.getAttribute('src') !== src) {
+        image.setAttribute('src', src);
+      }
+    }
+
+    applyThemeImage();
+
+    const observer = new MutationObserver(() => applyThemeImage());
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    document.addEventListener('astro:before-preparation', () => observer.disconnect(), { once: true });
+  }
+  document.addEventListener('astro:page-load', initHeroThemePhone);
+
+  function initParallax() {
+    // Hero-specific parallax layers
+    const hero = document.querySelector('[data-hero]') as HTMLElement | null;
+    const orbs = hero?.querySelector('[data-hero-orbs]') as HTMLElement | null;
+    const constellation = hero?.querySelector('[data-hero-constellation]') as HTMLElement | null;
+
+    // Generic parallax layers (data-parallax="0.1")
+    const genericLayers = document.querySelectorAll<HTMLElement>('[data-parallax]');
+
+    if (!orbs && !constellation && !genericLayers.length) return;
+
+    let ticking = false;
+
+    function onScroll() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const scrollY = window.scrollY;
+        // Hero layers
+        if (hero && scrollY <= hero.offsetHeight) {
+          if (orbs) orbs.style.transform = `translateY(${scrollY * 0.25}px)`;
+          if (constellation) constellation.style.transform = `translateY(${scrollY * 0.12}px)`;
+        }
+        // Generic parallax layers
+        genericLayers.forEach(layer => {
+          const section = layer.closest('section') as HTMLElement | null;
+          if (!section) return;
+          const rect = section.getBoundingClientRect();
+          if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+          const speed = parseFloat(layer.dataset.parallax || '0.1');
+          const offset = (rect.top) * speed;
+          layer.style.transform = `translateY(${offset}px)`;
+        });
+        ticking = false;
+      });
+    }
+
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const controller = new AbortController();
+      window.addEventListener('scroll', onScroll, { passive: true, signal: controller.signal });
+      document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+    }
+  }
+
+  document.addEventListener('astro:page-load', initParallax);
+
+  // === Cursor Aurora ===
+  function initCursorAurora() {
+    const hero = document.querySelector('[data-hero]') as HTMLElement | null;
+    const aurora = document.querySelector('[data-hero-aurora]') as HTMLElement | null;
+    if (!hero || !aurora) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if ('ontouchstart' in window) return; // skip on touch devices
+
+    let rafId = 0;
+
+    function onMove(e: MouseEvent) {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(() => {
+        const rect = hero!.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        aurora!.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(79, 70, 229, 0.12), rgba(239, 45, 130, 0.06) 40%, transparent 70%)`;
+      });
+    }
+
+    function onEnter() { aurora!.style.opacity = '1'; }
+    function onLeave() { aurora!.style.opacity = '0'; }
+
+    const controller = new AbortController();
+    hero.addEventListener('mousemove', onMove, { passive: true, signal: controller.signal });
+    hero.addEventListener('mouseenter', onEnter, { signal: controller.signal });
+    hero.addEventListener('mouseleave', onLeave, { signal: controller.signal });
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+  }
+  document.addEventListener('astro:page-load', initCursorAurora);
+
+  // === Magnetic CTA Button ===
+  function initMagneticCTA() {
+    const btns = document.querySelectorAll<HTMLElement>('.cta-magnetic');
+    if (!btns.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if ('ontouchstart' in window) return;
+
+    const controller = new AbortController();
+
+    btns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) scale(1.05)`;
+      }, { passive: true, signal: controller.signal });
+
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = '';
+      }, { signal: controller.signal });
+    });
+
+    document.addEventListener('astro:before-preparation', () => controller.abort(), { once: true });
+  }
+  document.addEventListener('astro:page-load', initMagneticCTA);
+
+  // === Randomize floating genre badges ===
+  function initBadgeShuffle() {
+    const badges = document.querySelectorAll<HTMLElement>('[data-hero-badge]');
+    if (!badges.length) return;
+
+    const poolEl = document.getElementById('genre-pool');
+    if (!poolEl?.textContent) return;
+
+    const allGenres: { label: string; accent: string }[] = JSON.parse(poolEl.textContent);
+
+    // Fisher-Yates shuffle
+    const copy = [...allGenres];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    const picked = copy.slice(0, badges.length);
+
+    // Accent pattern for the 4 positions: indigo, indigo, pink, teal
+    const accentPattern = ['indigo', 'indigo', 'pink', 'teal'];
+
+    badges.forEach((badge, i) => {
+      badge.textContent = picked[i].label;
+      badge.classList.remove('floating-badge-pink', 'floating-badge-teal');
+      const accent = accentPattern[i];
+      if (accent === 'pink') badge.classList.add('floating-badge-pink');
+      if (accent === 'teal') badge.classList.add('floating-badge-teal');
+    });
+  }
+  document.addEventListener('astro:page-load', initBadgeShuffle);
+</script>

@@ -1,0 +1,110 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  class?: string;
+  imgClass?: string;
+  loading?: "lazy" | "eager";
+  decoding?: "sync" | "async" | "auto";
+  fetchPriority?: "high" | "low" | "auto";
+  lightSrc?: string;
+  darkSrc?: string;
+}
+
+const {
+  src,
+  alt,
+  class: className = "",
+  imgClass = "",
+  loading = "lazy",
+  decoding = "async",
+  fetchPriority = "auto",
+  lightSrc,
+  darkSrc,
+} = Astro.props;
+---
+
+<div class={`phone-mockup ${className}`}>
+  <div class="phone-frame">
+    <!-- Notch -->
+    <div class="phone-notch" aria-hidden="true"></div>
+    <!-- Screen -->
+    <img
+      src={src}
+      alt={alt}
+      width="390"
+      height="844"
+      class={`phone-screen ${imgClass}`}
+      loading={loading}
+      decoding={decoding}
+      fetchpriority={fetchPriority}
+      data-light-src={lightSrc}
+      data-dark-src={darkSrc}
+    />
+  </div>
+</div>
+
+<style>
+  .phone-mockup {
+    perspective: 1000px;
+  }
+
+  .phone-frame {
+    position: relative;
+    width: 280px;
+    height: 606px;
+    border-radius: 40px;
+    background: var(--color-phone-frame);
+    padding: 12px;
+    box-shadow:
+      0 0 0 2px var(--color-phone-ring),
+      0 25px 60px -12px var(--color-phone-shadow),
+      0 0 40px var(--color-phone-glow);
+    transform: rotateY(-5deg) rotateX(2deg);
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+    animation: phone-float 6s ease-in-out infinite;
+  }
+
+  .phone-frame:hover {
+    transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+  }
+
+  .phone-notch {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: var(--color-phone-frame);
+    border-radius: 0 0 16px 16px;
+    z-index: 10;
+  }
+
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 28px;
+    display: block;
+  }
+
+  @keyframes phone-float {
+    0%, 100% { transform: rotateY(-5deg) rotateX(2deg) translateY(0); }
+    50% { transform: rotateY(-5deg) rotateX(2deg) translateY(-12px); }
+  }
+
+  @media (min-width: 768px) {
+    .phone-frame {
+      width: 320px;
+      height: 693px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .phone-frame {
+      width: 360px;
+      height: 780px;
+    }
+  }
+</style>

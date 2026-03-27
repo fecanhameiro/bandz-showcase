@@ -1,0 +1,45 @@
+{
+  "name": "@bandz/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./types": "./dist/types/index.js",
+    "./schemas": "./dist/schemas/index.js",
+    "./constants": "./dist/constants/index.js",
+    "./design-tokens": "./dist/design-tokens/index.js",
+    "./firestore": "./dist/firestore/index.js"
+  },
+  "typesVersions": {
+    "*": {
+      "types": [
+        "dist/types/index.d.ts"
+      ],
+      "schemas": [
+        "dist/schemas/index.d.ts"
+      ],
+      "constants": [
+        "dist/constants/index.d.ts"
+      ],
+      "design-tokens": [
+        "dist/design-tokens/index.d.ts"
+      ],
+      "firestore": [
+        "dist/firestore/index.d.ts"
+      ]
+    }
+  },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "typescript": "^5.8.0"
+  },
+  "dependencies": {
+    "zod": "^4.3.6"
+  }
+}

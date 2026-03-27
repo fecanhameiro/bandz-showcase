@@ -1,0 +1,182 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helpers ────────────────────────────────────────
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getRole() {
+      return request.auth.token.role;
+    }
+
+    function isSuperadmin() {
+      return isAuthenticated() && getRole() == 'superadmin';
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (getRole() == 'admin' || getRole() == 'superadmin');
+    }
+
+    function isEditorOrAbove() {
+      return isAuthenticated() && (getRole() == 'editor' || getRole() == 'admin' || getRole() == 'superadmin');
+    }
+
+    function isViewerOrAbove() {
+      return isAuthenticated() && (getRole() == 'viewer' || getRole() == 'editor' || getRole() == 'admin' || getRole() == 'superadmin');
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getClientId() {
+      return request.auth.token.clientId;
+    }
+
+    // True if user has no clientId (superadmin) or doc belongs to their client
+    function isOwnClientDoc(docId) {
+      return isSuperadmin() || (getClientId() != null && getClientId() == docId);
+    }
+
+    // True if user has no clientId (superadmin) or doc.clientId matches
+    function isOwnClientData() {
+      return isSuperadmin() || (getClientId() != null && resource.data.clientId == getClientId());
+    }
+
+    // For create: check incoming data's clientId
+    function isOwnClientWrite() {
+      return isSuperadmin() || (getClientId() != null && request.resource.data.clientId == getClientId());
+    }
+
+    // ─── Mobile users ───────────────────────────────────
+    match /BR_users/{userId} {
+      allow read: if isOwner(userId) || isViewerOrAbove();
+      allow write: if isOwner(userId) || isEditorOrAbove();
+
+      match /notifications/{notifId} {
+        allow read, write: if isOwner(userId);
+      }
+      match /deviceTokens/{tokenId} {
+        allow read, write: if isOwner(userId);
+      }
+      match /rawMusicData/{docId} {
+        allow read: if isOwner(userId) || isViewerOrAbove();
+        allow write: if isOwner(userId);
+      }
+      match /processedGenres/{docId} {
+        allow read: if isOwner(userId) || isViewerOrAbove();
+        allow write: if isOwner(userId);
+      }
+    }
+
+    // ─── Content collections (artists, places, events) ─
+    match /BR_artists/{docId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isEditorOrAbove();
+      allow delete: if isAdmin();
+    }
+
+    match /BR_places/{docId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isEditorOrAbove();
+      allow delete: if isAdmin();
+    }
+
+    match /BR_events/{docId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isEditorOrAbove();
+      allow delete: if isAdmin();
+    }
+
+    // ─── Style groups & parameters (read-only for most) ─
+    match /BR_bandz_style_groups/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /BR_bandz_parameters/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isSuperadmin();
+    }
+
+    // ─── Instagram ──────────────────────────────────────
+    match /BR_instagram_profile_businesses/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+
+      match /BR_instagram_posts/{postId} {
+        allow read: if isAuthenticated();
+        allow write: if isAdmin();
+      }
+    }
+
+    // ─── Admin-only collections ─────────────────────────
+    // Admin users: scoped by clientId (admin only sees users from their client)
+    match /BR_admin_users/{docId} {
+      allow read: if isViewerOrAbove() && (isSuperadmin() || isOwner(docId) || isOwnClientData());
+      allow create, update: if isAdmin() && (isSuperadmin() || isOwnClientWrite());
+      allow delete: if isSuperadmin();
+    }
+
+    // Clients: admin only sees their own client doc (docId == their clientId)
+    match /BR_clients/{docId} {
+      allow read: if isViewerOrAbove() && isOwnClientDoc(docId);
+      allow create, update: if isSuperadmin();
+      allow delete: if isSuperadmin();
+    }
+
+    // Audit log — only Cloud Functions write, admins can read
+    match /BR_audit_log/{docId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Deletion log — only Cloud Functions write, admins can read
+    match /BR_deletion_log/{docId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ─── Banner collections ─────────────────────────────
+    match /BR_home_banners/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /BR_banner_history/{docId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    match /BR_banner_config/{docId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // ─── Feedbacks (created by Cloud Functions, managed by superadmin) ─
+    match /BR_feedbacks/{docId} {
+      allow read: if isSuperadmin();
+      allow update, delete: if isSuperadmin();
+      allow create: if false; // only Cloud Functions create feedbacks
+    }
+
+    // ─── Share analytics (written by Cloud Functions only) ─
+    match /share_analytics/{docId} {
+      allow read: if isAdmin();
+      allow write: if false; // only Cloud Functions write
+    }
+
+    // ─── System collections ─────────────────────────────
+    match /errors/{docId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    match /secrets/{docId} {
+      allow read, write: if false;
+    }
+  }
+}

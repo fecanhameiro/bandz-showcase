@@ -1,0 +1,332 @@
+---
+import type { Locale } from "../i18n/translations";
+import { t } from "../i18n/translations";
+import PhoneMockup from "./PhoneMockup.astro";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const i = t(locale);
+const localePrefix = locale === "pt-br" ? "" : `/${locale}`;
+const privacyHref = locale === "pt-br" ? "/privacy" : `${localePrefix}/privacy`;
+const termsHref = locale === "pt-br" ? "/terms" : `${localePrefix}/terms`;
+---
+
+<section id="download" class="relative py-32 px-6 overflow-hidden">
+  <!-- Gradient top border -->
+  <div
+    class="absolute top-0 left-0 right-0 h-px"
+    style="background: linear-gradient(to right, transparent, var(--color-brand-indigo), var(--color-brand-secondary), transparent)"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Dual glow background (parallax layer) -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true" data-parallax="0.1" style="will-change: transform">
+    <div
+      class="absolute top-1/2 left-1/4 -translate-y-1/2 w-[400px] h-[400px] rounded-full opacity-15 blur-[100px]"
+      style="background: radial-gradient(circle, var(--color-brand-indigo), transparent 70%)"
+    ></div>
+    <div
+      class="absolute top-1/2 right-1/4 -translate-y-1/2 w-[350px] h-[350px] rounded-full opacity-10 blur-[100px]"
+      style="background: radial-gradient(circle, var(--color-brand-secondary), transparent 70%)"
+    ></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto relative z-10">
+    <div class="reveal grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+      <!-- Phone mockup (left on desktop, below on mobile) -->
+      <div class="flex justify-center lg:justify-start order-2 lg:order-1">
+        <div class="block dark:hidden">
+          <PhoneMockup
+            src="/screenshot-app-light.png"
+            alt="bandz app"
+          />
+        </div>
+        <div class="hidden dark:block">
+          <PhoneMockup
+            src="/screenshot-app-dark.png"
+            alt="bandz app"
+          />
+        </div>
+      </div>
+
+      <!-- Text + Store badges (right on desktop, top on mobile) -->
+      <div class="text-center lg:text-left order-1 lg:order-2 reveal-stagger">
+        <h2 class="font-black tracking-tight mb-6" style="font-size: clamp(2.25rem, 6vw, 3.75rem);">
+          {i.cta.title}
+        </h2>
+        <p class="text-xl text-text-secondary mb-8 max-w-xl mx-auto lg:mx-0">
+          {i.cta.subtitle}
+        </p>
+
+        <form
+          class="waitlist-form glass-card rounded-2xl p-5 sm:p-6 max-w-xl mx-auto lg:mx-0"
+          data-waitlist-form
+          data-success-label={i.cta.form.success}
+          data-error-label={i.cta.form.error}
+          novalidate
+        >
+          <input type="hidden" name="locale" value={locale} />
+          <input type="text" name="company" tabindex="-1" autocomplete="off" class="waitlist-honeypot" aria-hidden="true" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label class="waitlist-field sm:col-span-1">
+              <span>{i.cta.form.emailLabel}</span>
+              <input
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder={i.cta.form.emailPlaceholder}
+                class="waitlist-input"
+              />
+            </label>
+
+            <label class="waitlist-field sm:col-span-1">
+              <span>{i.cta.form.cityLabel}</span>
+              <input
+                name="city"
+                type="text"
+                required
+                autocomplete="address-level2"
+                placeholder={i.cta.form.cityPlaceholder}
+                class="waitlist-input"
+              />
+            </label>
+          </div>
+
+          <label class="waitlist-field mt-4">
+            <span>{i.cta.form.musicTasteLabel}</span>
+            <textarea
+              name="musicTaste"
+              rows="2"
+              placeholder={i.cta.form.musicTastePlaceholder}
+              class="waitlist-textarea"
+            ></textarea>
+            <span class="waitlist-hint">{i.cta.form.musicTasteHint}</span>
+          </label>
+
+          <button
+            type="submit"
+            class="cta-primary mt-5 w-full px-6 py-3 rounded-xl text-white font-semibold"
+            data-loading-label={i.cta.form.submitting}
+            data-track="waitlist_submit_click"
+            data-track-location="download"
+          >
+            <span data-submit-label>{i.cta.form.submit}</span>
+          </button>
+
+          <p class="waitlist-feedback mt-3" data-waitlist-feedback role="status" aria-live="polite"></p>
+
+          <p class="waitlist-hint mt-3">
+            {i.cta.form.privacyHint}
+            {" "}
+            <a href={termsHref} class="waitlist-link">{i.footer.terms}</a>
+            {" "}
+            ·
+            {" "}
+            <a href={privacyHref} class="waitlist-link">{i.footer.privacy}</a>
+          </p>
+
+          <p class="waitlist-hint mt-3">{i.cta.storeNote}</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { trackEvent } from "../lib/analytics";
+
+  function initWaitlistForm() {
+    const form = document.querySelector<HTMLFormElement>("[data-waitlist-form]");
+    if (!form || form.dataset.bound === "true") return;
+    form.dataset.bound = "true";
+
+    const feedback = form.querySelector<HTMLElement>("[data-waitlist-feedback]");
+    const submitButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    const submitLabel = submitButton?.querySelector<HTMLElement>("[data-submit-label]");
+    if (!submitButton || !submitLabel) return;
+
+    const baseLabel = submitLabel.textContent ?? "";
+    const loadingLabel = submitButton.dataset.loadingLabel ?? baseLabel;
+    const successLabel = form.dataset.successLabel ?? "Submitted successfully.";
+    const errorLabel = form.dataset.errorLabel ?? "Could not submit. Please try again.";
+
+    let trackedStart = false;
+    const trackStart = () => {
+      if (trackedStart) return;
+      trackedStart = true;
+      trackEvent("waitlist_start", { location: "download" });
+    };
+
+    form.addEventListener("input", trackStart);
+    form.addEventListener("change", trackStart);
+
+    function setFeedback(message: string, tone: "success" | "error") {
+      if (!feedback) return;
+      feedback.textContent = message;
+      feedback.dataset.tone = tone;
+    }
+
+    function setSubmitting(isSubmitting: boolean) {
+      submitButton.disabled = isSubmitting;
+      submitLabel.textContent = isSubmitting ? loadingLabel : baseLabel;
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const email = String(formData.get("email") ?? "").trim();
+      const city = String(formData.get("city") ?? "").trim();
+      const musicTaste = String(formData.get("musicTaste") ?? "").trim();
+      const locale = String(formData.get("locale") ?? "pt-br").trim();
+      const company = String(formData.get("company") ?? "").trim();
+      const parsedGenres = musicTaste
+        .split(/[,;/|]/g)
+        .map((item) => item.trim())
+        .filter(Boolean)
+        .slice(0, 8);
+
+      if (!email || !city) {
+        setFeedback(errorLabel, "error");
+        return;
+      }
+
+      setSubmitting(true);
+      setFeedback("", "success");
+
+      try {
+        const response = await fetch("/api/waitlist", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email,
+            city,
+            genres: parsedGenres,
+            musicTaste,
+            locale,
+            company,
+            source: "download_cta",
+            pagePath: window.location.pathname,
+            consentVersion: "2026-03-11",
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        form.reset();
+        trackedStart = false;
+        setFeedback(successLabel, "success");
+        trackEvent("waitlist_submit_success", { location: "download" });
+      } catch {
+        setFeedback(errorLabel, "error");
+        trackEvent("waitlist_submit_error", { location: "download" });
+      } finally {
+        setSubmitting(false);
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initWaitlistForm);
+</script>
+
+<style>
+  .waitlist-form {
+    border: 1px solid var(--color-glass-border);
+  }
+
+  .waitlist-honeypot {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .waitlist-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    text-align: left;
+  }
+
+  .waitlist-input {
+    border-radius: 0.85rem;
+    border: 1px solid var(--color-cta-border);
+    background: color-mix(in srgb, var(--color-bg) 70%, transparent);
+    color: var(--color-text-primary);
+    padding: 0.72rem 0.85rem;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .waitlist-input:focus-visible {
+    border-color: var(--color-brand-indigo-light);
+    box-shadow: 0 0 0 3px var(--color-glow-primary);
+    outline: none;
+  }
+
+  .waitlist-textarea {
+    border-radius: 0.85rem;
+    border: 1px solid var(--color-cta-border);
+    background: color-mix(in srgb, var(--color-bg) 70%, transparent);
+    color: var(--color-text-primary);
+    padding: 0.72rem 0.85rem;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    resize: vertical;
+    min-height: 74px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .waitlist-textarea:focus-visible {
+    border-color: var(--color-brand-indigo-light);
+    box-shadow: 0 0 0 3px var(--color-glow-primary);
+    outline: none;
+  }
+
+  .waitlist-hint {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    text-align: left;
+  }
+
+  .waitlist-link {
+    color: var(--color-text-secondary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .waitlist-link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .waitlist-feedback {
+    min-height: 1.2rem;
+    font-size: 0.85rem;
+    text-align: left;
+  }
+
+  .waitlist-feedback[data-tone="success"] {
+    color: var(--color-semantic-success);
+  }
+
+  .waitlist-feedback[data-tone="error"] {
+    color: var(--color-semantic-error);
+  }
+
+  .waitlist-form button:disabled {
+    opacity: 0.8;
+    cursor: wait;
+  }
+</style>
